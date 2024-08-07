@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Home from './Components/Home';
 import ProductPage from './Components/ProductPage';
@@ -9,6 +9,7 @@ import Signup from './Components/Signup';
 import CollaborativeRoomPopup from './Components/CollaborativeRoomPopup';
 import { extendTheme } from '@chakra-ui/react';
 import SharedCart from './Components/SharedCart';
+import Suggestions from './Components/Suggestions';
 
 function App() {
   const [isCollaborativeMode, setCollaborativeMode] = useState(false);
@@ -52,6 +53,7 @@ function App() {
         <Route path="common-cart" element={<SharedCart sharedCart={sharedCart} />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/suggestions" element={<Suggestions />} />
       </Routes>
     </>
   );

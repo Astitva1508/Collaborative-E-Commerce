@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { Box, Input, Button, Heading, FormControl, FormLabel, Text, Flex } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useUser } from './../Context/UserContext'; // Import the UserContext
 
 const Login = () => {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
+  const { login } = useUser(); // Get login function from context
+  const navigate = useNavigate();
 
   const handleLogin = () => {
     // Handle login logic here
-    console.log('User ID:', userId);
-    console.log('Password:', password);
+    login(userId); // Update context and localStorage
+    navigate('/'); // Redirect to homepage
   };
 
   return (

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Heading, Text, FormControl, FormLabel, Input, Button, Alert, AlertIcon } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const Signup = () => {
   const [username, setUsername] = useState('');
@@ -7,6 +8,7 @@ const Signup = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleSignup = () => {
     // Basic validation
@@ -27,6 +29,9 @@ const Signup = () => {
     setEmail('');
     setPassword('');
     setConfirmPassword('');
+
+    // Redirect to login page
+    navigate('/login');
   };
 
   return (

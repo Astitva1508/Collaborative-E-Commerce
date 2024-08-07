@@ -30,7 +30,7 @@ const Home = () => {
             Discover our amazing products and great deals.
           </Text>
           <Link to="/product">
-            <Button colorScheme="teal" variant="solid">
+            <Button variant="outline" color="white" _hover={{ background: "teal.800" }}>
               Shop Now
             </Button>
           </Link>
