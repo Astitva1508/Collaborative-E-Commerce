@@ -1,6 +1,25 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Image, Heading, Text, Button, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Checkbox, CheckboxGroup, Stack, } from '@chakra-ui/react';
+import {
+  Box,
+  Image,
+  Heading,
+  Text,
+  Button,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  Checkbox,
+  CheckboxGroup,
+  Stack,
+  Divider,
+  Flex,
+} from '@chakra-ui/react';
+
 // Dummy product data (in a real app, you'd fetch this from an API)
 const products = [
   { id: 1, name: 'Product 1', description: 'This is a great product.', price: '$29.99', image: 'https://picsum.photos/400/300?random=1' },
@@ -53,22 +72,43 @@ const ProductDetails = ({ addToCommonCart }) => {
 
   return (
     <Box p={4}>
-      <Image src={product.image} alt={product.name} borderRadius="md" mb={4} />
-      <Heading as="h2" size="xl" mb={2}>{product.name}</Heading>
-      <Text fontSize="lg" mb={4}>{product.description}</Text>
-      <Text fontSize="2xl" fontWeight="bold" mb={4}>{product.price}</Text>
+      <Flex align="start" direction={{ base: 'column', md: 'row' }} spacing={4}>
+        {/* Product Details */}
+        <Box flex="1" p={4} border="1px solid #e2e8f0" borderRadius="md" mb={{ base: 4, md: 0 }}>
+          <Image
+            src={product.image}
+            alt={product.name}
+            borderRadius="md"
+            mb={4}
+            cursor="pointer"
+            onClick={handleAddToCommonCart} // Add to common cart on image click
+          />
+          <Heading as="h2" size="xl" mb={2}>
+            {product.name}
+          </Heading>
+          <Text fontSize="lg" mb={4}>
+            {product.description}
+          </Text>
+          <Text fontSize="2xl" fontWeight="bold" mb={4}>
+            {product.price}
+          </Text>
+        </Box>
 
-      <Button colorScheme="teal" mb={4} onClick={handleAddToCommonCart}>
-        Add to Common Cart
-      </Button>
+        <Divider orientation="vertical" height="auto" borderColor="gray.300" />
 
-      <Button colorScheme="purple" mb={4} onClick={onSuggestOpen}>
-        Suggest
-      </Button>
-
-      <Button colorScheme="purple" mb={4} onClick={onReviewOpen}>
-        Ask for Review
-      </Button>
+        {/* Action Buttons */}
+        <Box flex="1" p={4} border="1px solid #e2e8f0" borderRadius="md">
+          <Button colorScheme="teal" mb={4} width="full" onClick={handleAddToCommonCart}>
+            Add to Common Cart
+          </Button>
+          <Button colorScheme="purple" mb={4} width="full" onClick={onSuggestOpen}>
+            Suggest
+          </Button>
+          <Button colorScheme="purple" width="full" onClick={onReviewOpen}>
+            Ask for Review
+          </Button>
+        </Box>
+      </Flex>
 
       {/* Suggest Modal */}
       <Modal isOpen={isSuggestOpen} onClose={onSuggestClose}>
