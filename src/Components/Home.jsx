@@ -1,13 +1,9 @@
 import { Box, Flex, Heading, Text, Button, Image, Grid, GridItem } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 
-const Home = () => {
-  // Sample data for featured products
-  const featuredProducts = [
-    { id: 1, name: 'Product 1', price: '$29.99', image: 'https://picsum.photos/300/200?random=1' },
-    { id: 2, name: 'Product 2', price: '$39.99', image: 'https://picsum.photos/300/200?random=2' },
-    { id: 3, name: 'Product 3', price: '$49.99', image: 'https://picsum.photos/300/200?random=3' },
-  ];
+const Home = ({ products }) => {
+  // Limit to 3 featured products
+  const featuredProducts = products.slice(0, 3);
 
   return (
     <Box p={4}>
@@ -16,7 +12,7 @@ const Home = () => {
         direction={{ base: 'column', md: 'row' }}
         align="center"
         justify="space-between"
-        bg="teal.500"
+        bg="primary.500"
         p={6}
         borderRadius="md"
         color="white"
@@ -30,7 +26,7 @@ const Home = () => {
             Discover our amazing products and great deals.
           </Text>
           <Link to="/product">
-            <Button variant="outline" color="white" _hover={{ background: "teal.800" }}>
+            <Button variant="outline" color="white" _hover={{ background: "primary.800" }}>
               Shop Now
             </Button>
           </Link>
@@ -43,7 +39,6 @@ const Home = () => {
         />
       </Flex>
 
-      {/* Featured Products */}
       {/* Featured Products */}
       <Heading as="h2" size="lg" mb={4}>
         Featured Products
@@ -65,7 +60,7 @@ const Home = () => {
               {product.price}
             </Text>
             <Link to={`/product/${product.id}`}>
-              <Button colorScheme="teal" variant="outline">
+              <Button colorScheme="primary" variant="outline">
                 View Product
               </Button>
             </Link>
@@ -90,7 +85,7 @@ const Home = () => {
         <Text fontSize="lg" mb={4}>
           Join our newsletter and be the first to know about new products and special deals.
         </Text>
-        <Button colorScheme="teal" variant="solid">
+        <Button colorScheme="primary" variant="solid">
           Sign Up Now
         </Button>
       </Flex>

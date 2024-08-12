@@ -1,49 +1,43 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Flex,
-  Link,
-  Button,
-  Text,
-  Spacer,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  FormControl,
-  FormLabel,
-  Input,
-  List,
-  ListItem,
-  IconButton,
-  useDisclosure,
-  Divider,
-  Tooltip
-} from '@chakra-ui/react';
+import { Box, Flex, Link, Button, Text, Spacer, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, FormControl, FormLabel, Input, List, ListItem, IconButton, useDisclosure, Divider, Tooltip, } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useUser } from './../Context/UserContext';
-import { FaTrash, FaBell } from 'react-icons/fa'; // For delete and notification icons
+import { FaTrash, FaBell, FaShoppingCart } from 'react-icons/fa'; // For delete and notification icons
+import { GrStatusCritical, GrStatusGoodSmall } from "react-icons/gr";
+import { useNavigate } from 'react-router-dom';
 
-const Navbar = ({ onEnterCollaborativeMode }) => {
+const Navbar = ({ setCollaborativeMode, setCurrentMembers, currentMembers, setInRoomMembers, isCollaborativeMode }) => {
   const { user, logout } = useUser();
+  const handleLogout = () => {
+    setCollaborativeMode(false);
+    logout();
+  };
+  const navigate = useNavigate();
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [username, setUsername] = useState('');
   const [userList, setUserList] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [isNotificationsOpen, setNotificationsOpen] = useState(false);
 
-  const handleInvite = () => {
-    if (username.trim() !== '') {
-      setUserList([...userList, username]);
-      setUsername('');
-      setNotifications([...notifications, `Invited ${username}`]); // Add a notification
+  const dummyUsers = [
+    { username: 'aditya', email: 'aditya@example.com', phone: '1234567890' },
+    { username: 'astitva', email: 'astitva@example.com', phone: '0987654321' },
+    { username: 'rehan', email: 'rehan@example.com', phone: '1122334455' },
+  ];
+
+  const handleInvite = (suggestion) => {
+    if (suggestion.trim() !== '') {
+      setUserList((prevList) => [...prevList, suggestion]);
+      setUsername(''); // Clear input after adding
+      setNotifications((prevNotifications) => [...prevNotifications, `Invited ${suggestion}`]);
+      setCurrentMembers((prev) => [...prev, suggestion]);
     }
   };
 
   const handleRemove = (userToRemove) => {
-    setUserList(userList.filter(user => user !== userToRemove));
+    setUserList(userList.filter((user) => user !== userToRemove));
+    setCurrentMembers(currentMembers.filter((member) => member !== userToRemove));
   };
 
   const toggleNotifications = () => {
@@ -51,14 +45,25 @@ const Navbar = ({ onEnterCollaborativeMode }) => {
   };
 
   const handleDone = () => {
-    onEnterCollaborativeMode(); // Enable Collaborative Mode
-    setUserList([]); // Clear the list after inviting
-    onClose(); // Close the modal
+    if (currentMembers.length != 0) {
+      setInRoomMembers(userList);
+      setCollaborativeMode(true); 
+      onClose(); // Close the modal
+    }
   };
+
+  const filteredSuggestions = dummyUsers
+    .filter(
+      (user) =>
+        user.username.toLowerCase().includes(username.toLowerCase()) ||
+        user.email.toLowerCase().includes(username.toLowerCase()) ||
+        user.phone.includes(username)
+    )
+    .map((user) => user.username);
 
   return (
     <>
-      <Box bg="teal.600" px={4} py={2}>
+      <Box bg='primary.500' px={4} py={2}>
         <Flex h={16} alignItems="center" justifyContent="space-between">
           {/* Logo and Home Link */}
           <Link as={RouterLink} to="/" color="white" fontWeight="bold" fontSize="lg">
@@ -79,12 +84,20 @@ const Navbar = ({ onEnterCollaborativeMode }) => {
                 <Tooltip label="Notifications" aria-label="Notifications">
                   <IconButton
                     icon={<FaBell />}
-                    variant="ghost"
-                    colorScheme="whiteAlpha"
+                    colorScheme='white'
                     onClick={toggleNotifications}
-                    size="lg"
+                    size="md"
+                    _hover={{ transform: 'translateY(-2px)' }}
+                  />
+                </Tooltip>
+                <Tooltip label="personal cart" aria-label="personal cart">
+                  <IconButton
+                    icon={<FaShoppingCart />}
+                    colorScheme="white"
+                    onClick={() => navigate('/personal-cart')}
+                    size="md"
                     mr={4}
-                    _hover={{ transform: "translateY(-2px)" }}
+                    _hover={{ transform: 'translateY(-2px)' }}
                   />
                 </Tooltip>
 
@@ -94,16 +107,12 @@ const Navbar = ({ onEnterCollaborativeMode }) => {
                   variant="outline"
                   mr={4}
                   onClick={onOpen}
-                  _hover={{ background: "teal.800" }}
+                  _hover={{ background: 'primary.800' }}
                 >
-                  Collaborative Mode
+                  <Flex gap={1} alignItems='center'>Collaborative Mode
+                    <GrStatusGoodSmall color={isCollaborativeMode ? 'red' : 'white'} /></Flex>
                 </Button>
-                <Button
-                  color="#fff"
-                  variant="outline"
-                  onClick={logout}
-                  _hover={{ background: "teal.800" }}
-                >
+                <Button color="#fff" variant="outline" onClick={handleLogout} _hover={{ background: 'primary.800' }}>
                   Logout
                 </Button>
               </>
@@ -115,9 +124,7 @@ const Navbar = ({ onEnterCollaborativeMode }) => {
                   </Button>
                 </Link>
                 <Link as={RouterLink} to="/signup">
-                  <Button colorScheme="teal">
-                    Signup
-                  </Button>
+                  <Button colorScheme="primary.800">Signup</Button>
                 </Link>
               </>
             )}
@@ -158,25 +165,33 @@ const Navbar = ({ onEnterCollaborativeMode }) => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Collaborative Mode</ModalHeader>
+          <ModalHeader>Collaborative Mode </ModalHeader>
           <ModalBody>
             <FormControl id="username" mb={4}>
-              <FormLabel>Enter Username to Invite</FormLabel>
+              <FormLabel>Enter Username/Email/Phone to Invite</FormLabel>
               <Input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Username"
               />
+              {username && (
+                <List spacing={2} mt={2}>
+                  {filteredSuggestions.map((suggestion, index) => (
+                    <ListItem
+                      key={index}
+                      onClick={() => handleInvite(suggestion)}
+                      cursor="pointer"
+                      _hover={{ background: 'gray.100' }}
+                      p={2}
+                      borderRadius="md"
+                    >
+                      {suggestion}
+                    </ListItem>
+                  ))}
+                </List>
+              )}
             </FormControl>
-            <Button
-              colorScheme="teal"
-              mb={4}
-              onClick={handleInvite}
-              isDisabled={!username.trim()}
-            >
-              Add
-            </Button>
             <Divider mb={4} />
             <List spacing={3}>
               {userList.map((user, index) => (
@@ -185,7 +200,7 @@ const Navbar = ({ onEnterCollaborativeMode }) => {
                   <IconButton
                     icon={<FaTrash />}
                     size="sm"
-                    colorScheme="red"
+                    colorScheme="black"
                     variant="outline"
                     onClick={() => handleRemove(user)}
                   />
@@ -194,7 +209,7 @@ const Navbar = ({ onEnterCollaborativeMode }) => {
             </List>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="teal" mr={3} onClick={handleDone}>
+            <Button colorScheme="primary" mr={3} onClick={handleDone}>
               Invite All
             </Button>
             <Button variant="outline" onClick={onClose}>

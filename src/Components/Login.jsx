@@ -42,14 +42,14 @@ const Login = () => {
           />
         </FormControl>
 
-        <Button colorScheme="teal" width="full" mb={4} onClick={handleLogin}>
+        <Button colorScheme="primary" width="full" mb={4} onClick={handleLogin}>
           Login
         </Button>
 
         <Text textAlign="center">
           Don't have an account?{' '}
           <Link to="/signup">
-            <Button variant="link" colorScheme="teal">
+            <Button variant="link" colorScheme="primary">
               Sign Up
             </Button>
           </Link>

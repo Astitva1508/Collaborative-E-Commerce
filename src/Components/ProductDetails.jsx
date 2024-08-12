@@ -1,45 +1,27 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import {
-  Box,
-  Image,
-  Heading,
-  Text,
-  Button,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  Checkbox,
-  CheckboxGroup,
-  Stack,
-  Divider,
-  Flex,
-} from '@chakra-ui/react';
+import { Box, Image,NumberInput, NumberInputField, NumberInputStepper,NumberIncrementStepper,NumberDecrementStepper,  Heading, Text, Button, useDisclosure, useToast, Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverBody, PopoverCloseButton, Checkbox, CheckboxGroup, Stack, Divider, Flex, List, ListItem, Input, FormControl, FormLabel, } from '@chakra-ui/react';
 
-// Dummy product data (in a real app, you'd fetch this from an API)
-const products = [
-  { id: 1, name: 'Product 1', description: 'This is a great product.', price: '$29.99', image: 'https://picsum.photos/400/300?random=1' },
-  { id: 2, name: 'Product 2', description: 'This product is even better.', price: '$39.99', image: 'https://picsum.photos/400/300?random=2' },
-  { id: 3, name: 'Product 3', description: 'You will love this product.', price: '$49.99', image: 'https://picsum.photos/400/300?random=3' },
-];
 
-const usersInRoom = ['Alice', 'Bob', 'Charlie']; // Dummy users in the collaborative room
-
-const ProductDetails = ({ addToCommonCart }) => {
+const ProductDetails = ({ addToCommonCart, addToPersonalCart, isCollaborativeMode, inRoomMembers, products }) => {
   const { productId } = useParams(); // Get the productId from the URL
   const product = products.find(p => p.id === parseInt(productId)); // Find the product by id
   const [selectedUsers, setSelectedUsers] = useState([]);
-
+  const [reviewText, setReviewText] = useState('');
+  const [quantities, setQuantities] = useState({}); // State for quantities
+  const handleQuantityChange = (productId, value) => {
+    setQuantities(prevQuantities => ({
+      ...prevQuantities,
+      [productId]: value
+    }));
+  };
   const {
     isOpen: isSuggestOpen,
     onOpen: onSuggestOpen,
     onClose: onSuggestClose,
   } = useDisclosure();
 
+  const toast = useToast();
   const {
     isOpen: isReviewOpen,
     onOpen: onReviewOpen,
@@ -55,34 +37,63 @@ const ProductDetails = ({ addToCommonCart }) => {
   };
 
   const handleSuggest = () => {
-    // Logic for suggesting to selected users
-    console.log('Suggesting to:', selectedUsers);
+    toast({
+      title: 'product suggested to user',
+      status: 'success',
+      duration: 2000,
+      isClosable: true,
+    });
     onSuggestClose();
   };
 
   const handleAskForReview = () => {
-    // Logic for asking review from selected users
-    console.log('Asking for review from:', selectedUsers);
     onReviewClose();
+    toast({
+      title: 'You asked for review on this product.',
+      status: 'warning',
+      duration: 2000,
+      isClosable: true,
+    });
   };
 
   const handleAddToCommonCart = () => {
     addToCommonCart(product); // Add the product to the common cart
+    toast({
+      title: 'Product added to the shared cart',
+      status: 'success',
+      duration: 2000,
+      isClosable: true,
+    });
+  };
+
+
+  const handleAddToPersonalCart = () => {
+    addToPersonalCart(product); // Add the product to the personal cart
+    toast({
+      title: 'Product added to the cart',
+      status: 'success',
+      duration: 2000,
+      isClosable: true,
+    });
   };
 
   return (
     <Box p={4}>
-      <Flex align="start" direction={{ base: 'column', md: 'row' }} spacing={4}>
-        {/* Product Details */}
-        <Box flex="1" p={4} border="1px solid #e2e8f0" borderRadius="md" mb={{ base: 4, md: 0 }}>
+      <Flex direction={{ base: 'column', md: 'row' }} spacing={4}>
+        {/* Product Image */}
+        <Box flex="1" mb={{ base: 4, md: 0 }} >
           <Image
+            width='100%'
             src={product.image}
             alt={product.name}
             borderRadius="md"
-            mb={4}
             cursor="pointer"
-            onClick={handleAddToCommonCart} // Add to common cart on image click
+            onClick={handleAddToPersonalCart} 
           />
+        </Box>
+
+        {/* Product Details */}
+        <Box flex="2" p={4} border="1px solid #e2e8f0" borderRadius="md" ml={2}   boxShadow="0 3px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.08)">
           <Heading as="h2" size="xl" mb={2}>
             {product.name}
           </Heading>
@@ -92,69 +103,109 @@ const ProductDetails = ({ addToCommonCart }) => {
           <Text fontSize="2xl" fontWeight="bold" mb={4}>
             {product.price}
           </Text>
-        </Box>
+          <Box mb={4}>
+            <Text fontWeight="bold">Specifications:</Text>
+            <Text>{product.specifications}</Text>
+          </Box>
+          <Box mb={4}>
+            <Text fontWeight="bold">Reviews:</Text>
+            <List spacing={2}>
+              {product.reviews.map((review, index) => (
+                <ListItem key={index}>{review}</ListItem>
+              ))}
+            </List>
+            <Flex alignItems='center' gap={2} mt={2}>
+                        <Text><strong>Quantity:</strong></Text>
+                        <NumberInput
+                          min={1}
+                          value={quantities[product.id] || 1} // Use the state value or default to 1
+                          onChange={(valueString, valueNumber) => handleQuantityChange(product.id, valueNumber)}
+                        >
+                          <NumberInputField />
+                          <NumberInputStepper>
+                            <NumberIncrementStepper />
+                            <NumberDecrementStepper />
+                          </NumberInputStepper>
+                        </NumberInput>
+                      </Flex>
+          </Box>
+          <Flex direction="flex" spacing={2} gap={5} alignItems='flex-start'>
 
-        <Divider orientation="vertical" height="auto" borderColor="gray.300" />
-
-        {/* Action Buttons */}
-        <Box flex="1" p={4} border="1px solid #e2e8f0" borderRadius="md">
-          <Button colorScheme="teal" mb={4} width="full" onClick={handleAddToCommonCart}>
-            Add to Common Cart
-          </Button>
-          <Button colorScheme="purple" mb={4} width="full" onClick={onSuggestOpen}>
-            Suggest
-          </Button>
-          <Button colorScheme="purple" width="full" onClick={onReviewOpen}>
-            Ask for Review
-          </Button>
+            <Button colorScheme="blue" mb={2} onClick={handleAddToPersonalCart}>
+              Add to Cart
+            </Button>
+            <Button colorScheme="green">
+              Buy Now
+            </Button>
+          </Flex>
         </Box>
       </Flex>
 
-      {/* Suggest Modal */}
-      <Modal isOpen={isSuggestOpen} onClose={onSuggestClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Select Users to Suggest</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <CheckboxGroup onChange={handleSelectUsers}>
-              <Stack>
-                {usersInRoom.map(user => (
-                  <Checkbox key={user} value={user}>
-                    {user}
-                  </Checkbox>
-                ))}
-              </Stack>
-            </CheckboxGroup>
-            <Button mt={4} colorScheme="teal" onClick={handleSuggest}>
-              Suggest
-            </Button>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+      {isCollaborativeMode && (
+        <>
+          <Divider orientation="horizontal" my={4} borderColor="gray.300" />
+          {/* Collaborative Actions */}
+          <Box p={5} border="1px solid #e2e8f0" borderRadius="md"  boxShadow="0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.08)">
+            <Heading fontSize='2rem' pb={5}>Collaborative Mode</Heading>
+            <Flex gap={2}>
+              {isCollaborativeMode && <Button colorScheme="primary" mb={2} onClick={handleAddToCommonCart}>
+                Add to Common Cart
+              </Button>}
+              <Popover>
+                <PopoverTrigger>
+                  <Button colorScheme="purple" onClick={onSuggestOpen}>
+                    Suggest
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <PopoverHeader fontWeight="bold">Suggest to Users</PopoverHeader>
+                  <PopoverCloseButton />
+                  <PopoverBody>
+                    <CheckboxGroup onChange={handleSelectUsers}>
+                      <Stack>
+                        {inRoomMembers.map(user => (
+                          <Checkbox key={user} value={user}>
+                            {user}
+                          </Checkbox>
+                        ))}
+                      </Stack>
+                    </CheckboxGroup>
+                    <Button colorScheme="primary" onClick={handleSuggest} mt={4}>
+                      Suggest
+                    </Button>
+                  </PopoverBody>
+                </PopoverContent>
+              </Popover>
 
-      {/* Ask for Review Modal */}
-      <Modal isOpen={isReviewOpen} onClose={onReviewClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Select Users to Ask for Review</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <CheckboxGroup onChange={handleSelectUsers}>
-              <Stack>
-                {usersInRoom.map(user => (
-                  <Checkbox key={user} value={user}>
-                    {user}
-                  </Checkbox>
-                ))}
-              </Stack>
-            </CheckboxGroup>
-            <Button mt={4} colorScheme="teal" onClick={handleAskForReview}>
-              Ask for Review
-            </Button>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+              <Popover>
+                <PopoverTrigger>
+                  <Button colorScheme="purple" onClick={onReviewOpen}>
+                    Ask for Review
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <PopoverHeader fontWeight="bold">Ask for Review</PopoverHeader>
+                  <PopoverCloseButton />
+                  <PopoverBody>
+                  <CheckboxGroup onChange={handleSelectUsers}>
+                      <Stack>
+                        {inRoomMembers.map(user => (
+                          <Checkbox key={user} value={user}>
+                            {user}
+                          </Checkbox>
+                        ))}
+                      </Stack>
+                    </CheckboxGroup>
+                    <Button colorScheme="primary" onClick={handleAskForReview} mt={4}>
+                      Ask For Review
+                    </Button>
+                  </PopoverBody>
+                </PopoverContent>
+              </Popover>
+            </Flex>
+          </Box>
+        </>
+      )}
     </Box>
   );
 };

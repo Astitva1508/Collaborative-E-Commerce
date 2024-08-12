@@ -24,7 +24,7 @@ const product = {
 const suggestedBy = ['Alice', 'Bob', 'Charlie'];
 const suggestedTo = ['Dave', 'Eve', 'Frank'];
 
-function Suggestions() {
+function Suggestions({inRoomMembers}) {
   const [viewSuggestions, setViewSuggestions] = useState(false);
   const [feedbacks, setFeedbacks] = useState([]);
   const [feedbackInput, setFeedbackInput] = useState('');
