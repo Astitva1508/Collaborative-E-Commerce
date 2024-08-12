@@ -84,7 +84,7 @@ function Suggestions({ feedbackProducts, suggestedProducts }) {
           <Flex key={key}>
             <Box flex="1" p={4} border="1px solid #e2e8f0" borderRadius="md">
               <Flex gap={5}>
-                <Image src={product.product.image} alt={product.product.name} borderRadius="md" mb={4} />
+                <Image src={product.product.image} alt={product.product.name} borderRadius="md" mb={4} aspectRatio='16/9' height='20rem' objectFit='contain'/>
                 <Box>
                   <Text fontSize="xl" fontWeight="bold">
                     {product.product.name}
@@ -130,7 +130,7 @@ function Suggestions({ feedbackProducts, suggestedProducts }) {
           <Flex key={key}>
             <Box flex="1" p={4} border="1px solid #e2e8f0" borderRadius="md">
               <Flex gap={5}>
-                <Image src={product.image} alt={product.name} borderRadius="md" mb={4} />
+                <Image src={product.image} alt={product.name} borderRadius="md" mb={4} aspectRatio='16/9' height='20rem' objectFit='contain'/>
                 <Box>
                   <Text fontSize="xl" fontWeight="bold">
                     {product.name}

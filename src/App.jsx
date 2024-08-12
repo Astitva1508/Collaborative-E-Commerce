@@ -12,6 +12,7 @@ import PersonalCart from './Components/PersonalCart';
 import Suggestions from './Components/Suggestions';
 import { useToast } from '@chakra-ui/react'
 import { useEffect } from 'react';
+import products from './assets/product';
 
 function App() {
   const [isCollaborativeMode, setCollaborativeMode] = useState(false);
@@ -21,14 +22,6 @@ function App() {
   const [personalCart, setPersonalCart] = useState([]);
   const [feedbackProducts, setfeedBackProducts] = useState([]);
   const [suggestedProducts, setSuggestedProducts] = useState([]);
-  const products = [
-    { id: 1, name: 'Product 1', description: 'This is a great product.', price: 29.99, image: 'https://picsum.photos/400/300?random=1', specifications: 'Color: Red, Size: M, Material: Cotton', reviews: ['Great product!', 'Very comfortable.', 'Will buy again.'] },
-    { id: 2, name: 'Product 2', description: 'This product is even better.', price: 39.99, image: 'https://picsum.photos/400/300?random=2', specifications: 'Color: Blue, Size: L, Material: Polyester', reviews: ['Love the color!', 'Fits perfectly.', 'High quality.'] },
-    { id: 3, name: 'Product 3', description: 'You will love this product.', price: 49.99, image: 'https://picsum.photos/400/300?random=3', specifications: 'Color: Green, Size: XL, Material: Wool', reviews: ['Warm and cozy.', 'Excellent value.', 'Very stylish.'] },
-    { id: 4, name: 'Product 4', description: 'An amazing new product.', price: 25.00, image: 'https://picsum.photos/400/300?random=4', specifications: 'Color: Black, Size: S, Material: Silk', reviews: ['Luxurious feel.', 'Excellent quality.', 'Highly recommend.'] },
-    { id: 5, name: 'Product 5', description: 'Top-notch quality product.', price: 75.00, image: 'https://picsum.photos/400/300?random=5', specifications: 'Color: White, Size: L, Material: Linen', reviews: ['Very comfortable.', 'Love the quality.', 'Would buy again.'] },
-    { id: 6, name: 'Product 6', description: 'A must-have product.', price: 20.00, image: 'https://picsum.photos/400/300?random=6', specifications: 'Color: Yellow, Size: M, Material: Cotton', reviews: ['Bright and cheerful.', 'Great value.', 'Perfect fit.'] },
-  ];
 
   const addToCommonCart = (product) => {
     setSharedCart((prevCart) => [...prevCart, product]);

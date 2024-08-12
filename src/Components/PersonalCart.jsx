@@ -54,13 +54,14 @@ const PersonalCart = ({ personalCart, removeFromPersonalCart, placeOrder }) => {
                   isChecked={selectedItems.includes(item.id)}
                   onChange={() => handleSelectItem(item.id)}
                   mr={4}
+                  size='lg'
                 >
                   <Image
                     src={item.image}
                     alt={item.name}
                     borderRadius="md"
-                    boxSize="100px"
-                    objectFit="cover"
+                    boxSize="200px"
+                    objectFit='contain'
                     mr={4}
                   />
                 </Checkbox>

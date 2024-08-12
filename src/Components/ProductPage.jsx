@@ -54,7 +54,7 @@ const ProductPage = ({ products }) => {
             borderRadius="md"
             _hover={{ shadow: 'lg' }}
           >
-            <Image src={product.image} alt={product.name} borderRadius="md" mb={4} />
+            <Image src={product.image} alt={product.name} borderRadius="md" mb={4} aspectRatio='16/9' height='20rem' objectFit='contain'/>
             <Heading as="h3" size="md" mb={2}>
               {product.name}
             </Heading>

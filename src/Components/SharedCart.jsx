@@ -59,13 +59,14 @@ const SharedCart = ({ sharedCart, removeFromCart, inRoomMembers, onExportToPerso
                       isChecked={selectedItems.includes(item.id)}
                       onChange={() => handleSelectItem(item.id)}
                       mr={4}
+                      size='lg'
                     />
                     <Image
                       src={item.image}
                       alt={item.name}
                       borderRadius="md"
-                      boxSize="100px"
-                      objectFit="cover"
+                      boxSize="300px"
+                      objectFit="contain"
                       mr={4}
                     />
                     <Box>

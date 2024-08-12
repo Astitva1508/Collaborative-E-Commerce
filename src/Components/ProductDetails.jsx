@@ -92,13 +92,15 @@ const ProductDetails = ({ addToCommonCart, addToPersonalCart, isCollaborativeMod
     <Box p={4}>
       <Flex direction={{ base: 'column', md: 'row' }} spacing={4}>
         {/* Product Image */}
-        <Box flex="1" mb={{ base: 4, md: 0 }} >
+        <Box flex="1" mb={{ base: 4, md: 0 }} boxShadow="0 3px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.08)">
           <Image
+            mt={10}
             width='100%'
             src={product.image}
             alt={product.name}
             borderRadius="md"
             cursor="pointer"
+            aspectRatio='16/9' objectFit='contain'
             onClick={handleAddToPersonalCart}
           />
         </Box>

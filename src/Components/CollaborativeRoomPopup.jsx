@@ -172,6 +172,7 @@ const CollaborativeRoomPopup = ({ setCollaborativeMode, inRoomMembers, setInRoom
           borderRadius="lg"
           shadow="2xl"
           maxWidth="300px"
+          zIndex='2'
         >
 
           <Flex justifyContent="space-between" alignItems="center" mb={4}>
