@@ -10,7 +10,8 @@ import CollaborativeRoomPopup from './Components/CollaborativeRoomPopup';
 import SharedCart from './Components/SharedCart';
 import PersonalCart from './Components/PersonalCart';
 import Suggestions from './Components/Suggestions';
-import {useToast} from '@chakra-ui/react'
+import { useToast } from '@chakra-ui/react'
+import { useEffect } from 'react';
 
 function App() {
   const [isCollaborativeMode, setCollaborativeMode] = useState(false);
@@ -18,6 +19,8 @@ function App() {
   const [inRoomMembers, setInRoomMembers] = useState([]);
   const [sharedCart, setSharedCart] = useState([]);
   const [personalCart, setPersonalCart] = useState([]);
+  const [feedbackProducts, setfeedBackProducts] = useState([]);
+  const [suggestedProducts, setSuggestedProducts] = useState([]);
   const products = [
     { id: 1, name: 'Product 1', description: 'This is a great product.', price: 29.99, image: 'https://picsum.photos/400/300?random=1', specifications: 'Color: Red, Size: M, Material: Cotton', reviews: ['Great product!', 'Very comfortable.', 'Will buy again.'] },
     { id: 2, name: 'Product 2', description: 'This product is even better.', price: 39.99, image: 'https://picsum.photos/400/300?random=2', specifications: 'Color: Blue, Size: L, Material: Polyester', reviews: ['Love the color!', 'Fits perfectly.', 'High quality.'] },
@@ -42,10 +45,6 @@ function App() {
   const removeFromPersonalCart = (productId) => {
     setPersonalCart((prevCart) => prevCart.filter(product => product.id !== productId));
   };
-
-  const handlePlaceItemsForAllUsers = () => {
-    console.log('Placing items for all users:', sharedCart);
-  };
   const toast = useToast();
 
   const handleExportToPersonalCart = () => {
@@ -66,33 +65,44 @@ function App() {
 
   return (
     <>
-      <Navbar 
-        setCollaborativeMode={setCollaborativeMode} 
-        setCurrentMembers={setCurrentMembers} 
-        currentMembers={currentMembers} 
+      <Navbar
+        setCollaborativeMode={setCollaborativeMode}
+        setCurrentMembers={setCurrentMembers}
+        currentMembers={currentMembers}
         setInRoomMembers={setInRoomMembers}
-        isCollaborativeMode={isCollaborativeMode} 
+        isCollaborativeMode={isCollaborativeMode}
       />
       {isCollaborativeMode && (
-        <CollaborativeRoomPopup 
-          setCollaborativeMode={setCollaborativeMode} 
+        <CollaborativeRoomPopup
+          setCollaborativeMode={setCollaborativeMode}
           inRoomMembers={inRoomMembers}
           setInRoomMembers={setInRoomMembers}
         />
       )}
       <Routes>
-        <Route path="/" element={<Home products={products}/>} />
-        <Route path="product" element={<ProductPage products={products}/>} />
+        <Route path="/" element={<Home products={products} />} />
+        <Route path="product" element={<ProductPage products={products} />} />
         <Route
           path="product/:productId"
-          element={<ProductDetails addToCommonCart={addToCommonCart} addToPersonalCart={addToPersonalCart} isCollaborativeMode={isCollaborativeMode} inRoomMembers={inRoomMembers} products={products}/>}
+          element={
+            <ProductDetails
+              addToCommonCart={addToCommonCart}
+              addToPersonalCart={addToPersonalCart}
+              isCollaborativeMode={isCollaborativeMode}
+              inRoomMembers={inRoomMembers}
+              products={products}
+              setfeedBackProducts={setfeedBackProducts}
+              setSuggestedProducts={setSuggestedProducts}
+            />
+          }
+
         />
         <Route
           path="common-cart"
           element={
-            <SharedCart 
-              sharedCart={sharedCart} 
-              removeFromCart={removeFromCart} 
+            <SharedCart
+              sharedCart={sharedCart}
+              removeFromCart={removeFromCart}
               inRoomMembers={inRoomMembers}
               onExportToPersonalCart={handleExportToPersonalCart}
             />
@@ -101,18 +111,20 @@ function App() {
         <Route
           path="personal-cart"
           element={
-            <PersonalCart 
-              personalCart={personalCart} 
-              removeFromPersonalCart={removeFromPersonalCart} 
+            <PersonalCart
+              personalCart={personalCart}
+              removeFromPersonalCart={removeFromPersonalCart}
               placeOrder={handlePlaceOrder}
             />
           }
         />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/suggestions" element={<Suggestions 
-          inRoomMembers={inRoomMembers}
-        />} />
+        {/* <Route path="/signup" element={<Signup />} /> */}
+        <Route path="/suggestions" element={
+          <Suggestions
+            feedbackProducts={feedbackProducts}
+            suggestedProducts={suggestedProducts}
+          />} />
       </Routes>
     </>
   );

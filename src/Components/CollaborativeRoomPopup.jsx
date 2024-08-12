@@ -189,7 +189,7 @@ const CollaborativeRoomPopup = ({ setCollaborativeMode, inRoomMembers, setInRoom
                   <Tooltip label='Members' aria-label='Members'>
                     <IconButton
                       icon={<GrGroup />}
-                      variant="ghost"
+                      variant=""
                       colorScheme="whiteAlpha"
                       size="lg"
                       _hover={{ transform: "translateY(-5px)" }}
@@ -232,7 +232,7 @@ const CollaborativeRoomPopup = ({ setCollaborativeMode, inRoomMembers, setInRoom
             <Tooltip label="Shared Cart" aria-label="Shared Cart">
               <IconButton
                 icon={<FiShoppingCart />}
-                variant="ghost"
+                variant=""
                 colorScheme="whiteAlpha"
                 onClick={() => navigate('/common-cart')}
                 size="lg"
@@ -242,7 +242,7 @@ const CollaborativeRoomPopup = ({ setCollaborativeMode, inRoomMembers, setInRoom
             <Tooltip label="Suggestions/Feedbacks" aria-label="Suggestions">
               <IconButton
                 icon={<MdOutlineFeedback />}
-                variant="ghost"
+                variant=""
                 colorScheme="whiteAlpha"
                 onClick={() => navigate('/suggestions')}
                 size="lg"
@@ -252,7 +252,7 @@ const CollaborativeRoomPopup = ({ setCollaborativeMode, inRoomMembers, setInRoom
             <Tooltip label={isMicOn ? "Turn Off Mic" : "Turn On Mic"} aria-label="Mic">
               <IconButton
                 icon={isMicOn ? <FiMicOff /> : <FiMic />}
-                variant="ghost"
+                variant=""
                 colorScheme="whiteAlpha"
                 size="lg"
                 _hover={{ transform: "translateY(-5px)" }}
@@ -262,7 +262,7 @@ const CollaborativeRoomPopup = ({ setCollaborativeMode, inRoomMembers, setInRoom
             <Tooltip label="Exit" aria-label="Exit">
               <IconButton
                 icon={<IoMdExit />}
-                variant="ghost"
+                variant=""
                 colorScheme="whiteAlpha"
                 onClick={handleExit}
                 size="lg"

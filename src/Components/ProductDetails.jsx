@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Image,NumberInput, NumberInputField, NumberInputStepper,NumberIncrementStepper,NumberDecrementStepper,  Heading, Text, Button, useDisclosure, useToast, Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverBody, PopoverCloseButton, Checkbox, CheckboxGroup, Stack, Divider, Flex, List, ListItem, Input, FormControl, FormLabel, } from '@chakra-ui/react';
+import { Box, Image, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, Heading, Text, Button, useDisclosure, useToast, Popover, PopoverTrigger, PopoverContent, PopoverHeader, PopoverBody, PopoverCloseButton, Checkbox, CheckboxGroup, Stack, Divider, Flex, List, ListItem, Input, FormControl, FormLabel, } from '@chakra-ui/react';
+import { useUser } from '../Context/UserContext';
 
-
-const ProductDetails = ({ addToCommonCart, addToPersonalCart, isCollaborativeMode, inRoomMembers, products }) => {
+const ProductDetails = ({ addToCommonCart, addToPersonalCart, isCollaborativeMode, inRoomMembers, products, setfeedBackProducts, setSuggestedProducts }) => {
+  const { user, logout } = useUser();
   const { productId } = useParams(); // Get the productId from the URL
   const product = products.find(p => p.id === parseInt(productId)); // Find the product by id
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -37,8 +38,16 @@ const ProductDetails = ({ addToCommonCart, addToPersonalCart, isCollaborativeMod
   };
 
   const handleSuggest = () => {
+    const suggestions = JSON.parse(localStorage.getItem('suggestions')) || [];
+    const newSuggestion = {
+      product,
+      suggestedBy: user.id, 
+      suggestedTo: selectedUsers
+    };
+    localStorage.setItem('suggestions', JSON.stringify([...suggestions, newSuggestion]));
+    setSuggestedProducts(prev => [...prev, newSuggestion]);
     toast({
-      title: 'product suggested to user',
+      title: 'Product suggested to user',
       status: 'success',
       duration: 2000,
       isClosable: true,
@@ -46,8 +55,10 @@ const ProductDetails = ({ addToCommonCart, addToPersonalCart, isCollaborativeMod
     onSuggestClose();
   };
 
+
   const handleAskForReview = () => {
     onReviewClose();
+    setfeedBackProducts(prev => [...prev, product]);
     toast({
       title: 'You asked for review on this product.',
       status: 'warning',
@@ -88,12 +99,12 @@ const ProductDetails = ({ addToCommonCart, addToPersonalCart, isCollaborativeMod
             alt={product.name}
             borderRadius="md"
             cursor="pointer"
-            onClick={handleAddToPersonalCart} 
+            onClick={handleAddToPersonalCart}
           />
         </Box>
 
         {/* Product Details */}
-        <Box flex="2" p={4} border="1px solid #e2e8f0" borderRadius="md" ml={2}   boxShadow="0 3px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.08)">
+        <Box flex="2" p={4} border="1px solid #e2e8f0" borderRadius="md" ml={2} boxShadow="0 3px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.08)">
           <Heading as="h2" size="xl" mb={2}>
             {product.name}
           </Heading>
@@ -115,19 +126,19 @@ const ProductDetails = ({ addToCommonCart, addToPersonalCart, isCollaborativeMod
               ))}
             </List>
             <Flex alignItems='center' gap={2} mt={2}>
-                        <Text><strong>Quantity:</strong></Text>
-                        <NumberInput
-                          min={1}
-                          value={quantities[product.id] || 1} // Use the state value or default to 1
-                          onChange={(valueString, valueNumber) => handleQuantityChange(product.id, valueNumber)}
-                        >
-                          <NumberInputField />
-                          <NumberInputStepper>
-                            <NumberIncrementStepper />
-                            <NumberDecrementStepper />
-                          </NumberInputStepper>
-                        </NumberInput>
-                      </Flex>
+              <Text><strong>Quantity:</strong></Text>
+              <NumberInput
+                min={1}
+                value={quantities[product.id] || 1} // Use the state value or default to 1
+                onChange={(valueString, valueNumber) => handleQuantityChange(product.id, valueNumber)}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </Flex>
           </Box>
           <Flex direction="flex" spacing={2} gap={5} alignItems='flex-start'>
 
@@ -145,7 +156,7 @@ const ProductDetails = ({ addToCommonCart, addToPersonalCart, isCollaborativeMod
         <>
           <Divider orientation="horizontal" my={4} borderColor="gray.300" />
           {/* Collaborative Actions */}
-          <Box p={5} border="1px solid #e2e8f0" borderRadius="md"  boxShadow="0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.08)">
+          <Box p={5} border="1px solid #e2e8f0" borderRadius="md" boxShadow="0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.08)">
             <Heading fontSize='2rem' pb={5}>Collaborative Mode</Heading>
             <Flex gap={2}>
               {isCollaborativeMode && <Button colorScheme="primary" mb={2} onClick={handleAddToCommonCart}>
@@ -187,7 +198,7 @@ const ProductDetails = ({ addToCommonCart, addToPersonalCart, isCollaborativeMod
                   <PopoverHeader fontWeight="bold">Ask for Review</PopoverHeader>
                   <PopoverCloseButton />
                   <PopoverBody>
-                  <CheckboxGroup onChange={handleSelectUsers}>
+                    <CheckboxGroup onChange={handleSelectUsers}>
                       <Stack>
                         {inRoomMembers.map(user => (
                           <Checkbox key={user} value={user}>

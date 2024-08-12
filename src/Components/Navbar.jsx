@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Flex, Link, Button, Text, Spacer, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, FormControl, FormLabel, Input, List, ListItem, IconButton, useDisclosure, Divider, Tooltip, } from '@chakra-ui/react';
+import { Box, useToast, Flex, Link, Button, Text, Spacer, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, FormControl, FormLabel, Input, List, ListItem, IconButton, useDisclosure, Divider, Tooltip, } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useUser } from './../Context/UserContext';
 import { FaTrash, FaBell, FaShoppingCart } from 'react-icons/fa'; // For delete and notification icons
@@ -8,9 +8,16 @@ import { useNavigate } from 'react-router-dom';
 
 const Navbar = ({ setCollaborativeMode, setCurrentMembers, currentMembers, setInRoomMembers, isCollaborativeMode }) => {
   const { user, logout } = useUser();
+  const toast = useToast();
   const handleLogout = () => {
     setCollaborativeMode(false);
     logout();
+    toast({
+      title: 'You logged out!',
+      status: 'success',
+      duration: 2000,
+      isClosable: true,
+    });
   };
   const navigate = useNavigate();
 
@@ -118,14 +125,14 @@ const Navbar = ({ setCollaborativeMode, setCurrentMembers, currentMembers, setIn
               </>
             ) : (
               <>
-                <Link as={RouterLink} to="/login" mr={4}>
-                  <Button variant="link" color="white" fontWeight="medium">
+                <Link as={RouterLink} to="/login">
+                  <Button variant="link" color="white" fontWeight="bold" mr={4}>
                     Login
                   </Button>
                 </Link>
-                <Link as={RouterLink} to="/signup">
+                {/* <Link as={RouterLink} to="/signup">
                   <Button colorScheme="primary.800">Signup</Button>
-                </Link>
+                </Link> */}
               </>
             )}
           </Flex>
