@@ -1,23 +1,28 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, IconButton, Tooltip, Flex, Text, useToast } from '@chakra-ui/react';
+import {
+  Box, IconButton, Tooltip, Flex, Text, useToast, Popover, PopoverTrigger, PopoverContent, PopoverArrow,
+  PopoverCloseButton, PopoverHeader, PopoverBody, List, ListItem, Button, useDisclosure, AlertDialog, AlertDialogBody,
+  AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Heading
+} from '@chakra-ui/react';
 import { FiShoppingCart, FiMic, FiMicOff } from 'react-icons/fi';
 import { IoMdExit } from "react-icons/io";
+import { GrGroup } from "react-icons/gr";
+import { MdExitToApp, MdOutlineFeedback } from 'react-icons/md';
 import Draggable from 'react-draggable';
 import { useNavigate } from 'react-router-dom';
-import { useDisclosure, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button } from '@chakra-ui/react';
-import { MdOutlineFeedback } from 'react-icons/md';
 
-// eslint-disable-next-line react/prop-types
-const CollaborativeRoomPopup = ({ onExit }) => {
+const CollaborativeRoomPopup = ({ setCollaborativeMode, inRoomMembers, setInRoomMembers }) => {
   const navigate = useNavigate();
   const toast = useToast();
-
+  const canvasRef = useRef(null);
   const [isMicOn, setIsMicOn] = useState(false);
   const [audioContext, setAudioContext] = useState(null);
-  const canvasRef = useRef(null);
+  const [mutedMembers, setMutedMembers] = useState([]);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = React.useRef();
+  const { isOpen: isExitOpen, onOpen: onExitOpen, onClose: onExitClose } = useDisclosure();
+  const { isOpen: isKickOpen, onOpen: onKickOpen, onClose: onKickClose } = useDisclosure();
+  const cancelRef = useRef();
+  const [userToKick, setUserToKick] = useState(null);
 
   useEffect(() => {
     let audioStream;
@@ -101,14 +106,12 @@ const CollaborativeRoomPopup = ({ onExit }) => {
   };
 
   const handleExit = () => {
-    onOpen();
+    onExitOpen();
   };
 
   const confirmExit = () => {
-    onClose();
-    if (onExit) {
-      onExit();
-    }
+    onExitClose();
+    setCollaborativeMode(false);
     toast({
       title: 'You have exited the collaborative mode.',
       status: 'warning',
@@ -118,57 +121,139 @@ const CollaborativeRoomPopup = ({ onExit }) => {
     navigate('/');
   };
 
+  const handleMuteUnmute = (username) => {
+    if (mutedMembers.includes(username)) {
+      setMutedMembers(mutedMembers.filter(user => user !== username));
+      toast({
+        title: `${username} unmuted.`,
+        status: 'info',
+        duration: 2000,
+        isClosable: true,
+      });
+    } else {
+      setMutedMembers([...mutedMembers, username]);
+      toast({
+        title: `${username} muted.`,
+        status: 'warning',
+        duration: 2000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const handleKick = (username) => {
+    setUserToKick(username);
+    onKickOpen();
+  };
+
+  const confirmKick = () => {
+    const newMembers = inRoomMembers.filter(user => user != userToKick);
+    setInRoomMembers(newMembers);
+    onKickClose();
+    toast({
+      title: `${userToKick} has been kicked out.`,
+      status: 'error',
+      duration: 2000,
+      isClosable: true,
+    });
+    // Implement your logic to remove the user from the room here
+  };
+
   return (
     <>
       <Draggable>
         <Box
           position="fixed"
-          bottom="8"
-          right="8"
-          bg="teal.500"
+          bottom="12"
+          right="12"
+          bg="primary.500"
           color="white"
           p={4}
           borderRadius="lg"
           shadow="2xl"
-          zIndex="9999"
           maxWidth="300px"
+          zIndex='2'
         >
+
           <Flex justifyContent="space-between" alignItems="center" mb={4}>
             <Text fontSize="lg" fontWeight="bold">Collaborative Room</Text>
           </Flex>
-          {/* Sound Wave Visualization */}
           {isMicOn && (
             <Box mt={4} height="50px">
-              <canvas ref={canvasRef} width="190" height="50" />
+              <canvas ref={canvasRef} width="240px" height="50" />
             </Box>
           )}
           <Flex justifyContent="space-between">
+            <Popover>
+              <PopoverTrigger>
+                <Box>
+                  <Tooltip label='Members' aria-label='Members'>
+                    <IconButton
+                      icon={<GrGroup />}
+                      variant=""
+                      colorScheme="whiteAlpha"
+                      size="lg"
+                      _hover={{ transform: "translateY(-5px)" }}
+                    />
+                  </Tooltip>
+                </Box>
+              </PopoverTrigger>
+              <PopoverContent background='primary.400' border='none'>
+                <PopoverCloseButton />
+                <PopoverHeader fontWeight='bold'>Members</PopoverHeader>
+                <PopoverBody >
+                  <List spacing={3}>
+                    {inRoomMembers.map((member, key) => (
+                      <ListItem key={key} display="flex" alignItems="center" justifyContent="space-between">
+                        <Text>{member}</Text>
+                        <Flex>
+                          <IconButton
+                            icon={mutedMembers.includes(member) ? <FiMicOff /> : <FiMic />}
+                            size="sm"
+                            colorScheme={mutedMembers.includes(member) ? "red" : "teal"}
+                            variant="none"
+                            mr={2}
+                            onClick={() => handleMuteUnmute(member)}
+                          />
+                          <IconButton
+                            icon={<MdExitToApp />}
+                            size="sm"
+                            colorScheme="red"
+                            variant="none"
+                            onClick={() => handleKick(member)}
+                          />
+                        </Flex>
+                      </ListItem>
+                    ))}
+                  </List>
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
+
             <Tooltip label="Shared Cart" aria-label="Shared Cart">
               <IconButton
                 icon={<FiShoppingCart />}
-                variant="ghost"
+                variant=""
                 colorScheme="whiteAlpha"
                 onClick={() => navigate('/common-cart')}
                 size="lg"
                 _hover={{ transform: "translateY(-5px)" }}
-
               />
             </Tooltip>
             <Tooltip label="Suggestions/Feedbacks" aria-label="Suggestions">
               <IconButton
                 icon={<MdOutlineFeedback />}
-                variant="ghost"
+                variant=""
                 colorScheme="whiteAlpha"
                 onClick={() => navigate('/suggestions')}
                 size="lg"
                 _hover={{ transform: "translateY(-5px)" }}
-
               />
             </Tooltip>
             <Tooltip label={isMicOn ? "Turn Off Mic" : "Turn On Mic"} aria-label="Mic">
               <IconButton
                 icon={isMicOn ? <FiMicOff /> : <FiMic />}
-                variant="ghost"
+                variant=""
                 colorScheme="whiteAlpha"
                 size="lg"
                 _hover={{ transform: "translateY(-5px)" }}
@@ -178,12 +263,11 @@ const CollaborativeRoomPopup = ({ onExit }) => {
             <Tooltip label="Exit" aria-label="Exit">
               <IconButton
                 icon={<IoMdExit />}
-                variant="ghost"
+                variant=""
                 colorScheme="whiteAlpha"
                 onClick={handleExit}
                 size="lg"
                 _hover={{ transform: "translateY(-5px)" }}
-
               />
             </Tooltip>
           </Flex>
@@ -192,9 +276,9 @@ const CollaborativeRoomPopup = ({ onExit }) => {
 
       {/* Exit Confirmation Dialog */}
       <AlertDialog
-        isOpen={isOpen}
+        isOpen={isExitOpen}
         leastDestructiveRef={cancelRef}
-        onClose={onClose}
+        onClose={onExitClose}
       >
         <AlertDialogOverlay>
           <AlertDialogContent>
@@ -207,11 +291,39 @@ const CollaborativeRoomPopup = ({ onExit }) => {
             </AlertDialogBody>
 
             <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
+              <Button ref={cancelRef} onClick={onExitClose}>
                 Cancel
               </Button>
               <Button colorScheme="red" onClick={confirmExit} ml={3}>
                 Yes, Exit
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+
+      {/* Kick Confirmation Dialog */}
+      <AlertDialog
+        isOpen={isKickOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onKickClose}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Kick User
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              Are you sure you want to kick {userToKick} out of the room?
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onKickClose}>
+                Cancel
+              </Button>
+              <Button colorScheme="red" onClick={confirmKick} ml={3}>
+                Kick
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

@@ -1,21 +1,13 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import { Box, Input, Grid, GridItem, Heading, Text, Button, Image, Select } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 
-const ProductPage = () => {
-  const allProducts = [
-    { id: 1, name: 'Product 1', price: 29.99, image: 'https://picsum.photos/300/200?random=1' },
-    { id: 2, name: 'Product 2', price: 39.99, image: 'https://picsum.photos/300/200?random=2' },
-    { id: 3, name: 'Product 3', price: 49.99, image: 'https://picsum.photos/300/200?random=3' },
-    { id: 4, name: 'Product 4', price: 59.99, image: 'https://picsum.photos/300/200?random=4' },
-    { id: 5, name: 'Product 5', price: 19.99, image: 'https://picsum.photos/300/200?random=5' },
-  ];
-
+const ProductPage = ({ products }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [priceFilter, setPriceFilter] = useState('all');
 
   // Filter products based on search term and price filter
-  const filteredProducts = allProducts.filter((product) => {
+  const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesPrice =
       priceFilter === 'all' ||
@@ -62,7 +54,7 @@ const ProductPage = () => {
             borderRadius="md"
             _hover={{ shadow: 'lg' }}
           >
-            <Image src={product.image} alt={product.name} borderRadius="md" mb={4} />
+            <Image src={product.image} alt={product.name} borderRadius="md" mb={4} aspectRatio='16/9' height='20rem' objectFit='contain'/>
             <Heading as="h3" size="md" mb={2}>
               {product.name}
             </Heading>
@@ -70,7 +62,7 @@ const ProductPage = () => {
               ${product.price.toFixed(2)}
             </Text>
             <Link to={`/product/${product.id}`}>
-              <Button colorScheme="teal" variant="outline">
+              <Button colorScheme="primary" variant="outline">
                 View Product
               </Button>
             </Link>

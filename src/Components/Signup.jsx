@@ -88,7 +88,7 @@ const Signup = () => {
         />
       </FormControl>
 
-      <Button colorScheme="teal" width="full" onClick={handleSignup}>
+      <Button colorScheme="primary" width="full" onClick={handleSignup}>
         Sign Up
       </Button>
     </Box>
