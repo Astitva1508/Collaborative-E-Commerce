@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Home = ({ products }) => {
   // Limit to 3 featured products
-  const featuredProducts = products.slice(0, 3);
+  const featuredProducts = products.slice(0, 4);
 
   return (
     <Box p={4}>
@@ -35,7 +35,7 @@ const Home = ({ products }) => {
           src="https://www.instorindia.com/wp-content/uploads/2021/09/how-to-start-online-grocery-store.jpg"
           alt="Shopping Image"
           aspectRatio='16/9'
-          width='50'
+          height='80%'
           objectFit='cover'
           borderRadius="md"
           mt={{ base: 4, md: 0 }}
@@ -46,7 +46,7 @@ const Home = ({ products }) => {
       <Heading as="h2" size="lg" mb={4}>
         Featured Products
       </Heading>
-      <Grid templateColumns={{ base: '1fr', md: 'repeat(3, 1fr)' }} gap={6}>
+      <Grid templateColumns={{ base: '1fr', md: 'repeat(4, 1fr)' }} gap={6}>
         {featuredProducts.map((product) => (
           <GridItem
             key={product.id}
@@ -55,12 +55,12 @@ const Home = ({ products }) => {
             borderRadius="md"
             _hover={{ shadow: 'lg' }}
           >
-            <Image src={product.image} alt={product.name} borderRadius="md" mb={4} aspectRatio='16/9' height='20rem' objectFit='contain'/>
+            <Image src={product.image} alt={product.name} borderRadius="md" mb={4} aspectRatio='16/9' height='10rem' objectFit='contain'/>
             <Heading as="h3" size="md" mb={2}>
               {product.name}
             </Heading>
             <Text fontSize="lg" mb={4}>
-              {product.price}
+              $ {product.price}
             </Text>
             <Link to={`/product/${product.id}`}>
               <Button colorScheme="primary" variant="outline">
@@ -76,7 +76,7 @@ const Home = ({ products }) => {
         direction="column"
         align="center"
         justify="center"
-        bg="gray.700"
+        bg="cyan.600"
         p={8}
         borderRadius="md"
         color="white"

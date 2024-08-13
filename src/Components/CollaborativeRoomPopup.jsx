@@ -171,31 +171,34 @@ const CollaborativeRoomPopup = ({ setCollaborativeMode, inRoomMembers, setInRoom
           p={4}
           borderRadius="lg"
           shadow="2xl"
-          maxWidth="300px"
           zIndex='2'
         >
 
-          <Flex justifyContent="space-between" alignItems="center" mb={4}>
+          <Flex justifyContent="space-between" alignItems="center" mb={2}>
             <Text fontSize="lg" fontWeight="bold">Collaborative Room</Text>
           </Flex>
           {isMicOn && (
             <Box mt={4} height="50px">
-              <canvas ref={canvasRef} width="240px" height="50" />
+              <canvas ref={canvasRef}  height="50" />
             </Box>
           )}
-          <Flex justifyContent="space-between">
+          <Flex justifyContent="space-between" gap={4}>
             <Popover>
               <PopoverTrigger>
                 <Box>
-                  <Tooltip label='Members' aria-label='Members'>
-                    <IconButton
-                      icon={<GrGroup />}
-                      variant=""
-                      colorScheme="whiteAlpha"
-                      size="lg"
-                      _hover={{ transform: "translateY(-5px)" }}
-                    />
-                  </Tooltip>
+                  <Flex direction='column'>
+                    <Tooltip label='Members' aria-label='Members'>
+                      <IconButton
+                        icon={<GrGroup />}
+                        variant=""
+                        colorScheme="whiteAlpha"
+                        pt={2}
+                        size="md"
+                        _hover={{ transform: "translateY(-2px)" }}
+                      />
+                    </Tooltip>
+                    <Text fontSize='0.7rem'>Members</Text>
+                  </Flex>
                 </Box>
               </PopoverTrigger>
               <PopoverContent background='primary.400' border='none'>
@@ -229,47 +232,65 @@ const CollaborativeRoomPopup = ({ setCollaborativeMode, inRoomMembers, setInRoom
                 </PopoverBody>
               </PopoverContent>
             </Popover>
+            <Flex direction='column' alignItems='center'>
+              <Tooltip label="Shared Cart" aria-label="Shared Cart">
+                <IconButton
+                  icon={<FiShoppingCart />}
+                  variant=""
+                  colorScheme="whiteAlpha"
+                  onClick={() => navigate('/common-cart')}
+                  size="md"
+                  _hover={{ transform: "translateY(-2px)" }}
+                  pt={2}
+                />
+              </Tooltip>
+              <Text fontSize='0.7rem'>Shared</Text>
+            </Flex>
+            <Flex direction='column' alignItems='center'>
 
-            <Tooltip label="Shared Cart" aria-label="Shared Cart">
-              <IconButton
-                icon={<FiShoppingCart />}
-                variant=""
-                colorScheme="whiteAlpha"
-                onClick={() => navigate('/common-cart')}
-                size="lg"
-                _hover={{ transform: "translateY(-5px)" }}
-              />
-            </Tooltip>
-            <Tooltip label="Suggestions/Feedbacks" aria-label="Suggestions">
-              <IconButton
-                icon={<MdOutlineFeedback />}
-                variant=""
-                colorScheme="whiteAlpha"
-                onClick={() => navigate('/suggestions')}
-                size="lg"
-                _hover={{ transform: "translateY(-5px)" }}
-              />
-            </Tooltip>
-            <Tooltip label={isMicOn ? "Turn Off Mic" : "Turn On Mic"} aria-label="Mic">
-              <IconButton
-                icon={isMicOn ? <FiMicOff /> : <FiMic />}
-                variant=""
-                colorScheme="whiteAlpha"
-                size="lg"
-                _hover={{ transform: "translateY(-5px)" }}
-                onClick={toggleMic}
-              />
-            </Tooltip>
-            <Tooltip label="Exit" aria-label="Exit">
-              <IconButton
-                icon={<IoMdExit />}
-                variant=""
-                colorScheme="whiteAlpha"
-                onClick={handleExit}
-                size="lg"
-                _hover={{ transform: "translateY(-5px)" }}
-              />
-            </Tooltip>
+              <Tooltip label="Suggestions/Feedbacks" aria-label="Suggestions">
+                <IconButton
+                  icon={<MdOutlineFeedback />}
+                  variant=""
+                  colorScheme="whiteAlpha"
+                  onClick={() => navigate('/suggestions')}
+                  size="md"
+                  pt={2}
+                  _hover={{ transform: "translateY(-2px)" }}
+                />
+              </Tooltip>
+              <Text fontSize='0.7rem'>Suggestions</Text>
+            </Flex>
+            <Flex direction='column' alignItems='center'>
+
+              <Tooltip label={isMicOn ? "Turn Off Mic" : "Turn On Mic"} aria-label="Mic">
+                <IconButton
+                  icon={isMicOn ? <FiMicOff /> : <FiMic />}
+                  variant=""
+                  colorScheme="whiteAlpha"
+                  size="md"
+                  pt={4}
+                  _hover={{ transform: "translateY(-2px)" }}
+                  onClick={toggleMic}
+                />
+              </Tooltip>
+              <Text fontSize='0.7rem'>{isMicOn ? "Mute" : "Unmute"}</Text>
+            </Flex>
+            <Flex direction='column' alignItems='center'>
+
+              <Tooltip label="Exit" aria-label="Exit">
+                <IconButton
+                  icon={<IoMdExit />}
+                  variant=""
+                  colorScheme="whiteAlpha"
+                  onClick={handleExit}
+                  pt={2}
+                  size="md"
+                  _hover={{ transform: "translateY(-2px)" }}
+                />
+              </Tooltip>
+              <Text fontSize='0.7rem'>Exit</Text>
+            </Flex>
           </Flex>
         </Box>
       </Draggable>

@@ -60,6 +60,7 @@ const SharedCart = ({ sharedCart, removeFromCart, inRoomMembers, onExportToPerso
                       onChange={() => handleSelectItem(item.id)}
                       mr={4}
                       size='lg'
+                      border='black'
                     />
                     <Image
                       src={item.image}
