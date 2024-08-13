@@ -5,9 +5,11 @@ import { useUser } from './../Context/UserContext';
 import { FaTrash, FaBell, FaShoppingCart } from 'react-icons/fa'; // For delete and notification icons
 import { GrStatusCritical, GrStatusGoodSmall } from "react-icons/gr";
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const Navbar = ({ setCollaborativeMode, setCurrentMembers, currentMembers, setInRoomMembers, isCollaborativeMode }) => {
   const { user, logout } = useUser();
+  const [flicker, setFlicker] = useState(false);
   const toast = useToast();
   const handleLogout = () => {
     setCollaborativeMode(false);
@@ -32,11 +34,31 @@ const Navbar = ({ setCollaborativeMode, setCurrentMembers, currentMembers, setIn
     { username: 'astitva', email: 'astitva@example.com', phone: '0987654321' },
     { username: 'rehan', email: 'rehan@example.com', phone: '1122334455' },
   ];
-
+  useEffect(() => {
+    let flickerTimeout;
+  
+    const startFlickering = () => {
+      setFlicker(true);
+      flickerTimeout = setTimeout(() => {
+        setFlicker(false);
+        flickerTimeout = setTimeout(startFlickering, 1000); 
+      }, 1000); 
+    };
+  
+    if (isCollaborativeMode) {
+      startFlickering();
+    } else {
+      setFlicker(false);
+      clearTimeout(flickerTimeout);
+    }
+  
+    return () => clearTimeout(flickerTimeout); 
+  }, [isCollaborativeMode]);
+  
   const handleInvite = (suggestion) => {
     if (suggestion.trim() !== '') {
       setUserList((prevList) => [...prevList, suggestion]);
-      setUsername(''); // Clear input after adding
+      setUsername(''); 
       setNotifications((prevNotifications) => [...prevNotifications, `Invited ${suggestion}`]);
       setCurrentMembers((prev) => [...prev, suggestion]);
     }
@@ -74,7 +96,7 @@ const Navbar = ({ setCollaborativeMode, setCurrentMembers, currentMembers, setIn
         <Flex h={16} alignItems="center" justifyContent="space-between">
           {/* Logo and Home Link */}
           <Link as={RouterLink} to="/" color="white" fontWeight="bold" fontSize="lg">
-            E-Commerce
+            Collaborative E-Commerce
           </Link>
 
           <Spacer />
@@ -117,7 +139,7 @@ const Navbar = ({ setCollaborativeMode, setCurrentMembers, currentMembers, setIn
                   _hover={{ background: 'primary.800' }}
                 >
                   <Flex gap={1} alignItems='center'>Collaborative Mode
-                    <GrStatusGoodSmall color={isCollaborativeMode ? 'red' : 'white'} /></Flex>
+                    <GrStatusGoodSmall color={isCollaborativeMode && flicker ? 'red' : 'white'}/></Flex>
                 </Button>
                 <Button color="#fff" variant="outline" onClick={handleLogout} _hover={{ background: 'primary.800' }}>
                   Logout

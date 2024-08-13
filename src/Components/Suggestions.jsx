@@ -84,7 +84,7 @@ function Suggestions({ feedbackProducts, suggestedProducts }) {
           <Flex key={key}>
             <Box flex="1" p={4} border="1px solid #e2e8f0" borderRadius="md">
               <Flex gap={5}>
-                <Image src={product.product.image} alt={product.product.name} borderRadius="md" mb={4} aspectRatio='16/9' height='20rem' objectFit='contain'/>
+                <Image src={product.product.image} alt={product.product.name} borderRadius="md" mb={4} aspectRatio='16/9' height='15rem' objectFit='contain' />
                 <Box>
                   <Text fontSize="xl" fontWeight="bold">
                     {product.product.name}
@@ -114,23 +114,27 @@ function Suggestions({ feedbackProducts, suggestedProducts }) {
             </Box>
 
             <Box flex="1" p={4} ml={4} border="1px solid #e2e8f0" borderRadius="md">
-              <Text fontWeight='bold'>Suggested By :</Text>
-              {product.suggestedBy}
-              <Text fontWeight='bold' mt={4}>Suggested To :</Text>
-              <List spacing={2}>
-                {product.suggestedTo.map((sug, index) => (
-                  <ListItem key={index}>{sug}</ListItem>
-                ))}
-              </List>
+              <Box borderWidth="1px" borderRadius="lg" overflow="hidden" p={4} boxShadow="md">
+                <Text ><span style={{ fontWeight: 'bold' }}>Suggested By:</span> {product.suggestedBy}</Text>
 
+                <Text fontWeight="bold" mt={4}>Suggested To:</Text>
+                <List spacing={2} mt={4}>
+                  {product.suggestedTo.map((sug, index) => (
+                    <ListItem key={index} p={2} border="1px solid #e2e8f0" borderRadius="md">
+                      {index + 1}. {sug}
+                    </ListItem>
+                  ))}
+                </List>
+              </Box>
             </Box>
+
           </Flex>
         ))) : (
         feedbackProducts.map((product, key) => (
           <Flex key={key}>
             <Box flex="1" p={4} border="1px solid #e2e8f0" borderRadius="md">
               <Flex gap={5}>
-                <Image src={product.image} alt={product.name} borderRadius="md" mb={4} aspectRatio='16/9' height='20rem' objectFit='contain'/>
+                <Image src={product.image} alt={product.name} borderRadius="md" mb={4} aspectRatio='16/9' height='15rem' objectFit='contain' />
                 <Box>
                   <Text fontSize="xl" fontWeight="bold">
                     {product.name}

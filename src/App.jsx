@@ -10,9 +10,10 @@ import CollaborativeRoomPopup from './Components/CollaborativeRoomPopup';
 import SharedCart from './Components/SharedCart';
 import PersonalCart from './Components/PersonalCart';
 import Suggestions from './Components/Suggestions';
-import { useToast } from '@chakra-ui/react'
+import { ChakraProvider, useToast } from '@chakra-ui/react'
 import { useEffect } from 'react';
 import products from './assets/product';
+import { extendTheme } from '@chakra-ui/react';
 
 function App() {
   const [isCollaborativeMode, setCollaborativeMode] = useState(false);
@@ -22,7 +23,45 @@ function App() {
   const [personalCart, setPersonalCart] = useState([]);
   const [feedbackProducts, setfeedBackProducts] = useState([]);
   const [suggestedProducts, setSuggestedProducts] = useState([]);
+  const [colorPalette, setColorPalette] = useState({});
 
+  const customTheme = extendTheme({
+    colors: {
+      primary: colorPalette
+    }});
+  const toast = useToast();
+  useEffect(()=> {
+    if(isCollaborativeMode) {
+      toast({
+        title: 'Collaborative mode activated',
+        status: 'success',
+        duration: 4000,
+        isClosable: true,
+      });
+      setColorPalette({ 50: '#f3e0ff',
+        100: '#e0b3ff',
+        200: '#cc80ff',
+        300: '#b84dff',
+        400: '#a31aff',
+        500: '#8a00e6',
+        600: '#6b00b4',
+        700: '#4c0082',
+        800: '#2e0050',
+        900: '#100020',})
+    }
+    else {
+      setColorPalette({50: '#e0f7ff',
+        100: '#b3eaff',
+        200: '#80dbff',
+        300: '#4dcdff',
+        400: '#1abfff',
+        500: '#00a6e6',
+        600: '#0084b4',
+        700: '#006382',
+        800: '#004250',
+        900: '#002120',});
+    }
+  }, [isCollaborativeMode]);
   const addToCommonCart = (product) => {
     setSharedCart((prevCart) => [...prevCart, product]);
   };
@@ -38,7 +77,6 @@ function App() {
   const removeFromPersonalCart = (productId) => {
     setPersonalCart((prevCart) => prevCart.filter(product => product.id !== productId));
   };
-  const toast = useToast();
 
   const handleExportToPersonalCart = () => {
     setPersonalCart((prevCart) => [...prevCart, ...sharedCart]);
@@ -57,7 +95,7 @@ function App() {
   };
 
   return (
-    <>
+    <ChakraProvider theme={customTheme}>
       <Navbar
         setCollaborativeMode={setCollaborativeMode}
         setCurrentMembers={setCurrentMembers}
@@ -119,7 +157,7 @@ function App() {
             suggestedProducts={suggestedProducts}
           />} />
       </Routes>
-    </>
+    </ChakraProvider>
   );
 }
 

@@ -55,6 +55,7 @@ const PersonalCart = ({ personalCart, removeFromPersonalCart, placeOrder }) => {
                   onChange={() => handleSelectItem(item.id)}
                   mr={4}
                   size='lg'
+                  border='black'
                 >
                   <Image
                     src={item.image}

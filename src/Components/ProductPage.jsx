@@ -45,7 +45,7 @@ const ProductPage = ({ products }) => {
       </Select>
 
       {/* Product Grid */}
-      <Grid templateColumns={{ base: '1fr', md: 'repeat(3, 1fr)' }} gap={6}>
+      <Grid templateColumns={{ base: '1fr', md: 'repeat(4, 1fr)' }} gap={4}>
         {filteredProducts.map((product) => (
           <GridItem
             key={product.id}
@@ -54,7 +54,7 @@ const ProductPage = ({ products }) => {
             borderRadius="md"
             _hover={{ shadow: 'lg' }}
           >
-            <Image src={product.image} alt={product.name} borderRadius="md" mb={4} aspectRatio='16/9' height='20rem' objectFit='contain'/>
+            <Image src={product.image} alt={product.name} borderRadius="md" mb={4} aspectRatio='16/9' height='10rem' objectFit='contain'/>
             <Heading as="h3" size="md" mb={2}>
               {product.name}
             </Heading>
